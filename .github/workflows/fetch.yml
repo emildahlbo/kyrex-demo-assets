@@ -26,11 +26,10 @@ jobs:
           done
       - name: Søk
         run: |
-          pip install -q pillow
-          python3 tools/search.py
+          ls requests/search-*.txt >/dev/null 2>&1 && pip install -q pillow && python3 tools/search.py || true
       - name: Lagre
         run: |
           git config user.name "fetch-photos"
           git config user.email "actions@users.noreply.github.com"
-          git add -A A B C _search 2>/dev/null || true
-          git diff --cached --quiet || (git commit -m "Foto hentet fra requests" && git push)
+          for d in A B C _search; do [ -e "$d" ] && git add -A "$d"; done; true
+          git diff --cached --quiet || (git commit -m "Foto hentet fra requests" && for n in 1 2 3; do git pull --rebase -q && git push && break; sleep 5; done)
