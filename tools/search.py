@@ -18,7 +18,13 @@ for f in sorted(glob.glob('requests/search-*.txt')):
         try:
             d = json.loads(get('https://unsplash.com/napi/search/photos?' + urllib.parse.urlencode({'query': q, 'per_page': 30, 'plus': 'none'})))
         except Exception as e:
-            print('FEIL', name, e); continue
+            os.makedirs('_search', exist_ok=True)
+            open('_search/_log.txt', 'a').write(f'FEIL {name}: {e!r}\n')
+            try:
+                os.rmdir(out)
+            except OSError:
+                pass
+            continue
         res = [r for r in d.get('results', []) if not r.get('premium') and not r.get('plus')][:24]
         meta, thumbs = [], []
         for i, r in enumerate(res):
