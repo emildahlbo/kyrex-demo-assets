@@ -1,8 +1,8 @@
 """Søker i Unsplash (bare gratisbilder, ikke Unsplash+) og lager kontaktark.
 Inndata: requests/search-*.txt med linjer «<navn>\t<søkeord>». Utdata: _search/<navn>/sheet.jpg og meta.json."""
-import glob, io, json, os, sys, urllib.parse, urllib.request
+import glob, io, json, os, re, sys, urllib.parse, urllib.request
 from PIL import Image, ImageDraw, ImageFont
-UA = {'User-Agent': 'Mozilla/5.0 kyrex-demo-assets', 'Accept': 'application/json'}
+UA = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36', 'Accept': 'text/html,*/*'}
 def get(url):
     return urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=60).read()
 font = ImageFont.load_default(size=22)
@@ -16,26 +16,37 @@ for f in sorted(glob.glob('requests/search-*.txt')):
             continue
         os.makedirs(out, exist_ok=True)
         try:
-            d = json.loads(get('https://unsplash.com/napi/search/photos?' + urllib.parse.urlencode({'query': q, 'per_page': 30, 'plus': 'none'})))
+            html = get('https://unsplash.com/s/photos/' + urllib.parse.quote(q.replace(' ', '-')) + '?license=free').decode('utf-8', 'replace')
         except Exception as e:
             os.makedirs('_search', exist_ok=True)
             open('_search/_log.txt', 'a').write(f'FEIL {name}: {e!r}\n')
-            try:
-                os.rmdir(out)
-            except OSError:
-                pass
             continue
-        res = [r for r in d.get('results', []) if not r.get('premium') and not r.get('plus')][:24]
-        meta, thumbs = [], []
-        for i, r in enumerate(res):
-            meta.append({'i': i, 'id': r['id'], 'alt': r.get('alt_description'), 'w': r['width'], 'h': r['height'],
-                         'user': r['user']['name'], 'username': r['user']['username'], 'page': r['links']['html'],
-                         'raw': r['urls']['raw'].split('?')[0], 'license': 'Unsplash License'})
+        meta, thumbs, seen = [], [], set()
+        for fig in html.split('<figure')[1:]:
+            m = re.search(r'href="/photos/([^"?]+)"', fig)
+            im = re.search(r'https://images\.unsplash\.com/(photo-[0-9a-f]+-[0-9a-f]+)', fig)
+            if not m or not im or 'plus.unsplash.com' in fig:
+                continue
+            pid = m.group(1).rsplit('-', 1)[-1] if '-' in m.group(1) else m.group(1)
+            slug = m.group(1)
+            if slug in seen:
+                continue
+            seen.add(slug)
+            u = re.search(r'href="/@([^"?/]+)"', fig)
+            alt = re.search(r'alt="([^"]*)"', fig)
+            meta.append({'i': len(meta), 'slug': slug, 'alt': alt.group(1) if alt else '', 'username': u.group(1) if u else '',
+                         'page': 'https://unsplash.com/photos/' + slug, 'raw': 'https://images.unsplash.com/' + im.group(1), 'license': 'Unsplash License'})
+            if len(meta) >= 24:
+                break
+        for r in meta:
             try:
-                im = Image.open(io.BytesIO(get(r['urls']['raw'].split('?')[0] + '?w=300&h=300&fit=crop&q=60&fm=jpg'))).convert('RGB')
+                t = Image.open(io.BytesIO(get(r['raw'] + '?w=300&h=300&fit=crop&q=60&fm=jpg'))).convert('RGB')
             except Exception:
-                im = Image.new('RGB', (300, 300), 'gray')
-            thumbs.append(im.resize((300, 300)))
+                t = Image.new('RGB', (300, 300), 'gray')
+            thumbs.append(t.resize((300, 300)))
+        if not meta:
+            open('_search/_log.txt', 'a').write(f'TOMT {name}: {len(html)} tegn\n')
+            continue
         cols = 6
         rows = max(1, (len(thumbs) + cols - 1) // cols)
         sheet = Image.new('RGB', (cols * 300, rows * 300), 'white')
