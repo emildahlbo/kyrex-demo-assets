@@ -1,0 +1,31 @@
+# Henter lisensfrie foto (Unsplash, Pexels, Pixabay) listet i requests/*.tsv inn i repoet.
+# Linjeformat: <mål-sti>\t<nedlastings-URL>. Bare bilder, ingen temakode.
+name: fetch-photos
+on:
+  push:
+    paths: ['requests/*.tsv']
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Last ned
+        run: |
+          set -u
+          for f in requests/*.tsv; do
+            while IFS=$'\t' read -r dest url; do
+              [ -z "$dest" ] && continue
+              case "$dest" in \#*) continue;; esac
+              [ -f "$dest" ] && continue
+              mkdir -p "$(dirname "$dest")"
+              if curl -fsSL --max-time 60 -A "kyrex-demo-assets" -o "$dest" "$url"; then echo "ok $dest"; else echo "FEIL $dest $url"; rm -f "$dest"; fi
+            done < "$f"
+          done
+      - name: Lagre
+        run: |
+          git config user.name "fetch-photos"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A A B C 2>/dev/null || true
+          git diff --cached --quiet || (git commit -m "Foto hentet fra requests" && git push)
