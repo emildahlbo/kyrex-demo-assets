@@ -1,0 +1,21 @@
+d-hv-hero	offshore vessel fog sea
+d-hv-yard	ship dry dock maintenance
+d-hv-quay	work boat harbor morning
+d-hv-parts	pallets harbor quay
+d-hv-deck	ship deck crew work
+d-hv-bridge	ship bridge control panel
+d-hv-p	portrait professional man outdoor
+d-kv-hero	portrait backlight window silhouette
+d-kv-p	portrait woman office natural light
+d-li-hero	silhouette person grey background studio
+d-li-cabin	modern wooden cabin mountain
+d-li-cabin-in	cabin interior large window mountain view
+d-li-house	modern concrete house courtyard
+d-li-house-in	minimal interior daylight courtyard
+d-li-office	old industrial hall office
+d-li-detail	wood cladding detail
+d-sb-hero	pink clouds over water sunset
+d-sb-party	long table string lights summer evening
+d-sb-wedding	wedding table flowers bright
+d-sb-launch	stage lights smoke event
+d-nl-hero	mountains lake starry night
