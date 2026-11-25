@@ -1,0 +1,14 @@
+hv-puffer	puffer jacket
+hv-puffer2	down jacket studio
+hv-puffer3	quilted jacket flat lay
+hv-shell	rain jacket hiking
+hv-shell2	hardshell jacket mountain
+hv-parka	parka winter
+hv-vest	puffer vest
+hv-fleece	fleece jacket
+hv-beanie	wool beanie
+hv-mitten	mittens winter
+hv-hero	winter mountain hiker jacket
+hv-snow	snowy landscape norway
+hv-sewing	sewing workshop fabric
+hv-rack	jackets hanging rack
