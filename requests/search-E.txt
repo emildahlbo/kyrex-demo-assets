@@ -1,0 +1,30 @@
+sk-hero	campfire forest cooking
+sk-pan	cast iron skillet campfire
+sk-mug	enamel mug outdoors
+sk-kettle	camping coffee kettle fire
+sk-kuksa	wooden cup kuksa
+sk-blanket	wool blanket outdoor
+sk-forest	pine forest moss
+sk-hands	hands campfire coffee
+sk-tent	tent forest evening
+sk-ember	campfire embers
+ol-hero	mediterranean table olive oil
+ol-oil	olive oil bottle glass
+ol-pasta	dried pasta rustic
+ol-tomato	tomato sauce jar
+ol-cups	espresso cup ceramic
+ol-plate	terracotta plate
+ol-olives	olives bowl
+ol-lemons	lemons table sunlight
+ol-kitchen	italian kitchen rustic
+ol-bread	bread olive oil
+bt-hero	cocktail bar blue light
+bt-shaker	cocktail shaker
+bt-jigger	bar jigger
+bt-coupe	coupe glass cocktail
+bt-spoon	bar spoon stirring
+bt-ice	clear ice cube glass
+bt-pour	bartender pouring cocktail
+bt-tools	bar tools
+bt-night	city night blue hour
+bt-neon	neon light dark
